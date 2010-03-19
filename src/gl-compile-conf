@@ -354,7 +354,7 @@ for my $fragment_file (glob("conf/fragments/*.conf"))
     parse_conf_file($fragment_file, $fragment);
 }
 
-my $compiled_fh = wrap_open( ">", $GL_CONF_COMPILED );
+my $compiled_fh = wrap_open( ">", "$GL_CONF_COMPILED.new" );
 my $dumped_data = Data::Dumper->Dump([\%repos], [qw(*repos)]);
 # the dump uses single quotes, but we convert any strings containing $creater,
 # $readers, $writers, to double quoted strings.  A wee bit sneaky, but not too
@@ -362,6 +362,7 @@ my $dumped_data = Data::Dumper->Dump([\%repos], [qw(*repos)]);
 $dumped_data =~ s/'(?=[^']*\$(?:creater|readers|writers|gl_user))~?(.*?)'/"$1"/g;
 print $compiled_fh $dumped_data;
 close $compiled_fh or die "$ABRT close compiled-conf failed: $!\n";
+rename "$GL_CONF_COMPILED.new", "$GL_CONF_COMPILED";
 
 # ----------------------------------------------------------------------------
 #       any new repos to be created?
