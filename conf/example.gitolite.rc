@@ -171,6 +171,10 @@ $RSYNC_BASE = "";
 # Please see doc/4-wildcard-repositories.mkd for details.
 $GL_WILDREPOS = 0;
 
+# This prints out trace into a GL_LOG.trace file.  Set it greater than
+# 1 will enable GL_TRACE file
+$GL_TRACE = 1;
+
 # --------------------------------------
 # per perl rules, this should be the last line in such a file:
 1;

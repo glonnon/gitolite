@@ -24,7 +24,7 @@ use warnings;
 # ----------------------------------------------------------------------------
 
 # these are set by the "rc" file
-our ($GL_LOGT, $GL_CONF_COMPILED, $REPO_BASE, $GIT_PATH, $REPO_UMASK, $GL_ADMINDIR, $RSYNC_BASE, $HTPASSWD_FILE, $GL_WILDREPOS);
+our ($GL_LOGT, $GL_CONF_COMPILED, $REPO_BASE, $GIT_PATH, $REPO_UMASK, $GL_ADMINDIR, $RSYNC_BASE, $HTPASSWD_FILE, $GL_WILDREPOS, $GL_TRACE);
 # and these are set by gitolite.pm
 our ($R_COMMANDS, $W_COMMANDS, $REPONAME_PATT, $REPOPATT_PATT);
 our %repos;
@@ -167,7 +167,8 @@ $ENV{GL_REPO}=$repo;
 # ----------------------------------------------------------------------------
 #       first level permissions check
 # ----------------------------------------------------------------------------
-&trace_it("first level permisson check\n");
+&trace_it("first level permisson check\n") if($GL_TRACE > 0);
+
 if ( -d "$repo_base_abs/$repo.git" ) {
     # existing repo
     my ($creater, $user_R, $user_W) = &repo_rights($repo_base_abs, $repo, $user);
@@ -182,7 +183,7 @@ if ( -d "$repo_base_abs/$repo.git" ) {
         wrap_chdir($ENV{HOME});
     }
 }
-&trace_it("second level permisson check\n");
+&trace_it("second level permisson check\n") if($GL_TRACE > 0);
 # we know the user and repo; we just need to know what perm he's trying
 my $perm = ($verb =~ $R_COMMANDS ? 'R' : 'W');
 
@@ -193,10 +194,11 @@ die "$perm access for $repo DENIED to $user\n"
 # ----------------------------------------------------------------------------
 #       over to git now
 # ----------------------------------------------------------------------------
-&trace_it("system git command\t $ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
+&trace_it("start git\t$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n") if ($GL_TRACE > 0);
 #&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
 
 $repo = "'$REPO_BASE/$repo.git'";
 my $exitcode = system("git", "shell", "-c", "$verb $repo");
-&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\texitcode=$exitcode\n");
-&trace_it("exit git finished\texitcode=$exitcode\n");
+my $elapsed = Time::HiRes::tv_interval($scriptstart);
+&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\t$elapsed\texitcode=$exitcode\n");
+&trace_it("exit git\texitcode=$exitcode\n") if ($GL_TRACE > 0);
