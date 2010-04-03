@@ -60,7 +60,7 @@ sub log_it {
 use Time::HiRes;
 
 # initialize the trace variables
-my $stripstart = [Time::HiRes::gettimeofday()];
+my $scriptstart = [Time::HiRes::gettimeofday()];
 
 sub trace_it {
     open my $trace_fh, ">>", "$ENV{GL_LOG}.trace" or die "open trace failed: $!\n";
