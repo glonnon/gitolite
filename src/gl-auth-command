@@ -203,5 +203,5 @@ die "$perm access for $repo DENIED to $user\n"
 $repo = "'$REPO_BASE/$repo.git'";
 my $exitcode = system("git", "shell", "-c", "$verb $repo");
 my $elapsed = Time::HiRes::tv_interval($scriptstart);
-&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\t$elapsed\texitcode=$exitcode\n");
+&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\t$elapsed\t$exitcode\n");
 &trace_it("exit git\texitcode=$exitcode\n") if ($GL_TRACE > 0);
