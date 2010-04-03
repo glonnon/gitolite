@@ -193,10 +193,10 @@ die "$perm access for $repo DENIED to $user\n"
 # ----------------------------------------------------------------------------
 #       over to git now
 # ----------------------------------------------------------------------------
-&trace_it("exec git command:$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
-&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
+&trace_it("system git command\t $ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
+#&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
 
 $repo = "'$REPO_BASE/$repo.git'";
 my $exitcode = system("git", "shell", "-c", "$verb $repo");
 &log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\texitcode=$exitcode\n");
-&trace_it("exit git finished\n");
+&trace_it("exit git finished\texcitcode=$exitcode\n");
