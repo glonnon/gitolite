@@ -199,4 +199,4 @@ die "$perm access for $repo DENIED to $user\n"
 $repo = "'$REPO_BASE/$repo.git'";
 my $exitcode = system("git", "shell", "-c", "$verb $repo");
 &log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\texitcode=$exitcode\n");
-&trace_it("exit git finished\texcitcode=$exitcode\n");
+&trace_it("exit git finished\texitcode=$exitcode\n");
