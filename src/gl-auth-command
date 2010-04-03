@@ -197,4 +197,6 @@ die "$perm access for $repo DENIED to $user\n"
 &log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
 
 $repo = "'$REPO_BASE/$repo.git'";
-exec("git", "shell", "-c", "$verb $repo");
+my $exitcode = system("git", "shell", "-c", "$verb $repo");
+&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\texitcode=$exitcode\n");
+&trace_it("exit git finished\n");
