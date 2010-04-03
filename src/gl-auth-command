@@ -22,6 +22,9 @@ use warnings;
 # ----------------------------------------------------------------------------
 #       common definitions
 # ----------------------------------------------------------------------------
+use Time::HiRes;
+# initialize the trace variables
+my $scriptstart = [Time::HiRes::gettimeofday()];
 
 # these are set by the "rc" file
 our ($GL_LOGT, $GL_CONF_COMPILED, $REPO_BASE, $GIT_PATH, $REPO_UMASK, $GL_ADMINDIR, $RSYNC_BASE, $HTPASSWD_FILE, $GL_WILDREPOS, $GL_TRACE);
