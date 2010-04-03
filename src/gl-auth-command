@@ -62,7 +62,7 @@ if ($ARGV[0] eq '-s') {
     $shell_allowed = 1;
     shift;
 }
-&trace_it("start of gl-auth-command");
+&trace_it("start of gl-auth-command\n");
 # first, fix the biggest gripe I have with gitosis, a 1-line change
 my $user=$ENV{GL_USER}=shift;       # there; now that's available everywhere!
 
@@ -167,7 +167,7 @@ $ENV{GL_REPO}=$repo;
 # ----------------------------------------------------------------------------
 #       first level permissions check
 # ----------------------------------------------------------------------------
-&trace_it("first level permisson check");
+&trace_it("first level permisson check\n");
 if ( -d "$repo_base_abs/$repo.git" ) {
     # existing repo
     my ($creater, $user_R, $user_W) = &repo_rights($repo_base_abs, $repo, $user);
@@ -182,7 +182,7 @@ if ( -d "$repo_base_abs/$repo.git" ) {
         wrap_chdir($ENV{HOME});
     }
 }
-&trace_it("second level permisson check");
+&trace_it("second level permisson check\n");
 # we know the user and repo; we just need to know what perm he's trying
 my $perm = ($verb =~ $R_COMMANDS ? 'R' : 'W');
 
@@ -193,8 +193,10 @@ die "$perm access for $repo DENIED to $user\n"
 # ----------------------------------------------------------------------------
 #       over to git now
 # ----------------------------------------------------------------------------
-&trace_it("exec git command");
+&trace_it("exec git command:$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
 &log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n");
 
 $repo = "'$REPO_BASE/$repo.git'";
-exec("git", "shell", "-c", "$verb $repo");
+my $exitcode = system("git", "shell", "-c", "$verb $repo");
+&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\texitcode=$exitcode\n");
+&trace_it("exit git finished\n");

@@ -61,11 +61,11 @@ use Time::HiRes;
 
 # initialize the trace variables
 my $tracestart = [Time::HiRes::gettimeofday()];
-my $processId = $$;
+
 sub trace_it {
-    open my $trace_fh, ">>", $ENV{GL_LOG}.trace or die "open trace failed: $!\n";
+    open my $trace_fh, ">>", "$ENV{GL_LOG}.trace" or die "open trace failed: $!\n";
     my $elapsed = Time::HiRes::tv_interval($tracestart);
-    print $trace_fh "$processID\t$elapsed\t@_\n";
+    print $trace_fh "$$\t$elapsed\t@_";
     close $trace_fh or die "close trace failed: $!\n";
 }
 
