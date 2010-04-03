@@ -175,6 +175,10 @@ $GL_WILDREPOS = 0;
 # 1 will enable GL_TRACE file
 $GL_TRACE = 1;
 
+# Enable more verbose git log
+# > 0 : will output the start and exit of the git command
+$GL_LOG_VERBOSE = 1;
+
 # --------------------------------------
 # per perl rules, this should be the last line in such a file:
 1;
