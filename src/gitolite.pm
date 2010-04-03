@@ -57,6 +57,19 @@ sub log_it {
     close $log_fh or die "close log failed: $!\n";
 }
 
+use Time::HiRes;
+
+# initialize the trace variables
+my $tracestart = [Time::HiRes::gettimeofday()];
+my $processId = $$;
+sub trace_it {
+    open my $trace_fh, ">>", $ENV{GL_LOG}.trace or die "open trace failed: $!\n";
+    my $elapsed = Time::HiRes::tv_interval($tracestart);
+    print $trace_fh "$processID\t$elapsed\t@_\n";
+    close $trace_fh or die "close trace failed: $!\n";
+}
+
+
 # check one ref
 sub check_ref {
 
