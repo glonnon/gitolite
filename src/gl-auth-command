@@ -203,7 +203,7 @@ die "$perm access for $repo DENIED to $user\n"
 
 # get the IP address of the connection
 my $ipaddress = ${ENV{SSH_CLIENT}};
-$ipaddress = ($ipaddress ~= /(.*) /);
+$ipaddress = ($ipaddress =~ /(.*) /);
 
 $repo = "'$REPO_BASE/$repo.git'";
 my $exitcode = system("git", "shell", "-c", "$verb $repo");
