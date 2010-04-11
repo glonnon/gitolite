@@ -194,21 +194,24 @@ die "$perm access for $repo DENIED to $user\n"
     unless $repos{$repo}{$perm}{$user}
         or $repos{$repo}{$perm}{'@all'};
 
-# ----------------------------------------------------------------------------
-#       over to git now
-# ----------------------------------------------------------------------------
-&trace_it("start git\t$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n") if ($GL_TRACE > 0);
-
-&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\tstart\n") if ($GL_LOG_VERBOSE > 0);
 
 # get the IP address of the connection
 my $ipaddress = ${ENV{SSH_CLIENT}};
 $ipaddress = ($ipaddress =~ /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
+$clienthostname = gethostbyaddr(inet_aton($ipaddress, AF_INET);
+
+&trace_it("start git\t$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n") if ($GL_TRACE > 0);
+
+&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\tstart\n") if ($GL_LOG_VERBOSE > 0);
+
+# ----------------------------------------------------------------------------
+#       over to git now
+# ----------------------------------------------------------------------------
 
 $repo = "'$REPO_BASE/$repo.git'";
 my $exitcode = system("git", "shell", "-c", "$verb $repo");
 
 my $elapsed = Time::HiRes::tv_interval($scriptstart);
 
-&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\t$ipaddress\t$elapsed\t$exitcode\n");
+&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\t$clienthostname:$ipaddress\t$elapsed\t$exitcode\n");
 &trace_it("exit git\texitcode=$exitcode\n") if ($GL_TRACE > 0);
