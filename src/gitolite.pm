@@ -68,6 +68,28 @@ sub trace_it {
     close $trace_fh or die "close trace failed: $!\n";
 }
 
+Use Net::SMTP;
+
+sub send_email {
+    my $msg = $@;
+    if (($GL_ADMIN_EMAIL_ADDR) &&
+        ($GL_ADMIN_EMAIL_SUBJECT) &&
+        ($GL_SMTP_SERVER))
+    {
+        my $smtp = Net::SMTP->new($GL_SMTP_SERVER);
+        # from line
+        $smtp->mail($GL_ADMIN_EMAIL_ADDR);
+        # to line
+        $smtp->to($GL_ADMIN_EMAIL_ADDR);
+        $smtp->data();
+        $smtp->datasend("Priority: Urgent\n");
+        $smtp->datasend("Importance: High\n");
+        $smtp->datasend("Subject: $GL_ADMIN_EMAIL_SUBJECT");
+        $smtp->datasend($logmsg);
+        $smtp->dataend();
+        $smtp->quit();
+    }
+}
 
 # check one ref
 sub check_ref {

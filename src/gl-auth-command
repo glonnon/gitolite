@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use Socket; 
 
 # === auth-command ===
 # the command that GL users actually run
@@ -197,18 +198,22 @@ die "$perm access for $repo DENIED to $user\n"
 # ----------------------------------------------------------------------------
 #       over to git now
 # ----------------------------------------------------------------------------
-&trace_it("start git\t$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n") if ($GL_TRACE > 0);
-
-&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\tstart\n") if ($GL_LOG_VERBOSE > 0);
-
 # get the IP address of the connection
 my $ipaddress = ${ENV{SSH_CLIENT}};
-$ipaddress = ($ipaddress =~ /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
+$ipaddress =~ /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/;
+$ipaddress = $1;
+my $clientname = gethostbyaddr(inet_aton($ipaddress,AF_INET));
+
+
+&trace_it("start git\t$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\n") if ($GL_TRACE > 0);
+&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\tstart\n") if ($GL_LOG_VERBOSE > 0);
 
 $repo = "'$REPO_BASE/$repo.git'";
 my $exitcode = system("git", "shell", "-c", "$verb $repo");
 
 my $elapsed = Time::HiRes::tv_interval($scriptstart);
-
-&log_it("$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\t$ipaddress\t$elapsed\t$exitcode\n");
+my $logmsg = "$ENV{GL_TS}\t$ENV{SSH_ORIGINAL_COMMAND}\t$user\t$$\t$clientname:$ipaddress\t$elapsed\t$exitcode\n";
+&log_it($logmsg);
 &trace_it("exit git\texitcode=$exitcode\n") if ($GL_TRACE > 0);
+
+#send_email($logmsg) if ($exitcode > 0);
