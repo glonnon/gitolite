@@ -3,6 +3,12 @@
 use strict;
 use warnings;
 
+use Time::HiRes qw(gettimeofday tv_interval);
+
+my $starttime = [gettimeofday]; # start of the git transaction
+my $returncode;  # return code of the git process
+my $elapsedtime;  # time to execute the git transaction
+
 # === auth-command ===
 # the command that GL users actually run
 
@@ -218,7 +224,12 @@ die "$aa access for $repo DENIED to $user\n" unless $perm =~ /$aa/;
 #       over to git now
 # ----------------------------------------------------------------------------
 
-&log_it();
-
 $repo = "'$REPO_BASE/$repo.git'";
-exec("git", "shell", "-c", "$verb $repo") unless $verb eq 'git-init';
+
+$returncode = system("git", "shell", "-c", "$verb $repo") unless $verb eq 'git-init';
+
+$elapsedtime = tv_interval($starttime);
+
+&log_it("$ENV{SSH_ORIGINAL_COMMAND} $elapsedtime $returncode");
+
+exit $returncode;
